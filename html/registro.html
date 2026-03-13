@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIPEH — Registro</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/sipeh_estudiante.css" />
+  </head>
+  <body>
+    <div id="screen-login">
+      <div class="login-left">
+        <div class="ll-logo">
+          <div class="ll-icon">📝</div>
+          <div class="ll-brand">SIP<span>EH</span></div>
+          <div class="ll-tagline">Crear nueva cuenta<br />de Estudiante</div>
+        </div>
+        <div class="ll-univ">
+          <p>Universidad</p>
+          <strong>El Bosque — Facultad de Ingeniería</strong>
+        </div>
+      </div>
+      <div class="login-right">
+        <div class="login-form">
+          <div class="lf-title">Registro</div>
+          <div class="lf-sub">Crea tu cuenta para acceder a SIPEH</div>
+
+          <label class="lf-label">Nombre Completo</label>
+          <div class="lf-input-wrap">
+            <span class="icon">👤</span>
+            <input
+              class="lf-input"
+              type="text"
+              placeholder="Ej. Jhoan Bautista"
+              id="reg-nombre"
+              required
+            />
+          </div>
+
+          <label class="lf-label">Correo Institucional</label>
+          <div class="lf-input-wrap">
+            <span class="icon">✉️</span>
+            <input
+              class="lf-input"
+              type="email"
+              placeholder="ejemplo@unbosque.edu.co"
+              id="reg-email"
+              required
+            />
+          </div>
+
+          <label class="lf-label">Contraseña</label>
+          <div class="lf-input-wrap">
+            <span class="icon">🔒</span>
+            <input
+              class="lf-input"
+              type="password"
+              placeholder="••••••"
+              id="reg-password"
+              required
+            />
+          </div>
+
+          <label class="lf-label">Confirmar Contraseña</label>
+          <div class="lf-input-wrap">
+            <span class="icon">🔒</span>
+            <input
+              class="lf-input"
+              type="password"
+              placeholder="••••••"
+              id="reg-confirm-password"
+              required
+            />
+          </div>
+
+          <div
+            id="reg-error"
+            style="
+              color: #e53e3e;
+              font-size: 0.8rem;
+              margin-bottom: 15px;
+              display: none;
+            "
+          >
+            Las contraseñas no coinciden o faltan datos.
+          </div>
+
+          <button class="lf-btn" onclick="handleRegister()">
+            Crear Cuenta →
+          </button>
+
+          <div class="lf-or">o</div>
+
+          <div class="lf-help">
+            ¿Ya tienes cuenta?
+            <a href="sipeh_estudiante.html">Inicia sesión aquí</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/registro.js"></script>
+  </body>
+</html>
