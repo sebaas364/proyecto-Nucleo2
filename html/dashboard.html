@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIPEH — Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+  </head>
+  <body>
+    <div id="screen-app">
+      <aside class="sidebar">
+        <div class="sb-brand">
+          <div class="sb-brand-name">SIP<span>EH</span></div>
+          <div class="sb-brand-sub">Horarios · El Bosque</div>
+        </div>
+
+        <div class="sb-section">Principal</div>
+        <div
+          class="sb-item active"
+          onclick="navigatePage('dashboard', this)"
+          id="nav-dashboard"
+        >
+          <span class="sb-icon">🏠</span> Inicio
+        </div>
+
+        <div class="sb-section">Académico</div>
+        <div
+          class="sb-item"
+          onclick="navigatePage('oferta', this)"
+          id="nav-oferta"
+        >
+          <span class="sb-icon">📚</span> Oferta Académica
+          <span class="sb-badge">42</span>
+        </div>
+        <div
+          class="sb-item"
+          onclick="navigatePage('horario', this)"
+          id="nav-horario"
+        >
+          <span class="sb-icon">📅</span> Mi Horario
+        </div>
+
+        <div class="sb-section">Cuenta</div>
+        <div class="sb-item"><span class="sb-icon">👤</span> Mi Perfil</div>
+        <div class="sb-item" onclick="handleLogout()">
+          <span class="sb-icon">🚪</span> Cerrar Sesión
+        </div>
+
+        <div class="sb-spacer"></div>
+        <div class="sb-user">
+          <div class="sb-avatar">ES</div>
+          <div>
+            <div class="sb-uname">Estudiante</div>
+            <div class="sb-urole">Ingeniería de Sistemas</div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main-content">
+        <div class="topbar">
+          <div>
+            <div class="topbar-title" id="topbar-title">Dashboard</div>
+            <div class="topbar-sub">
+              Semestre 2026-I · Estado:
+              <span style="color: var(--green); font-weight: 700"
+                >Período de inscripción activo</span
+              >
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <div class="tb-icon-btn">🔔</div>
+            <div class="tb-icon-btn">❓</div>
+            <button
+              class="tb-btn"
+              onclick="
+                navigatePage('oferta', document.getElementById('nav-oferta'))
+              "
+            >
+              Inscribir Materias →
+            </button>
+          </div>
+        </div>
+
+        <div class="page active" id="page-dashboard">
+          <div class="page-title">¡Bienvenido! 👋</div>
+          <div class="page-subtitle">
+            Semestre 2026-I — Período de inscripción abierto hasta el 15 de
+            marzo.
+          </div>
+
+          <div class="cards-row">
+            <div class="card" style="border-color: var(--teal)">
+              <div class="card-icon">📖</div>
+              <div
+                class="card-val"
+                style="color: var(--teal)"
+                id="dash-materias"
+              >
+                3
+              </div>
+              <div class="card-lbl">Materias inscritas</div>
+              <div class="card-note" style="color: var(--text-light)">
+                de máx. 6 permitidas
+              </div>
+            </div>
+            <div class="card" style="border-color: var(--orange)">
+              <div class="card-icon">🏅</div>
+              <div
+                class="card-val"
+                style="color: var(--orange)"
+                id="dash-creditos"
+              >
+                11
+              </div>
+              <div class="card-lbl">Créditos inscritos</div>
+              <div class="card-note" style="color: var(--green)">
+                ✓ Dentro del límite
+              </div>
+            </div>
+            <div class="card" style="border-color: var(--blue)">
+              <div class="card-icon">📅</div>
+              <div class="card-val" style="color: var(--blue)">Lunes</div>
+              <div class="card-lbl">Próximo día de clases</div>
+              <div class="card-note" style="color: var(--text-light)">
+                Mañana 7:00 AM
+              </div>
+            </div>
+            <div class="card" style="border-color: var(--green)">
+              <div class="card-icon">⏰</div>
+              <div class="card-val" style="color: var(--green)">14</div>
+              <div class="card-lbl">Días para cierre</div>
+              <div class="card-note" style="color: var(--yellow)">
+                ⚠ Inscribe ya
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="dash-panel">
+              <div class="dp-title">📅 Próximas Clases</div>
+              <div class="next-class">
+                <div class="nc-time">LUN<br />7:00</div>
+                <div>
+                  <div class="nc-course">IS-301 — Estructuras de Datos</div>
+                  <div class="nc-detail">Prof. Rodríguez · Aula A-301</div>
+                </div>
+              </div>
+              <div class="next-class">
+                <div class="nc-time">LUN<br />9:00</div>
+                <div>
+                  <div class="nc-course">MAT-201 — Cálculo Integral</div>
+                  <div class="nc-detail">Prof. Torres · Aula C-105</div>
+                </div>
+              </div>
+            </div>
+            <div class="dash-panel">
+              <div class="dp-title">🔔 Alertas y Notificaciones</div>
+              <div class="alert-item info">
+                <div class="alert-dot" style="background: var(--blue)"></div>
+                <div>
+                  <strong>Período de inscripción activo</strong> hasta el 15 de
+                  marzo de 2026.
+                </div>
+              </div>
+              <div class="alert-item success">
+                <div class="alert-dot" style="background: var(--green)"></div>
+                <div>
+                  <strong>Inscripción confirmada:</strong> IS-301 Estructuras de
+                  Datos.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="page-oferta">
+          <div class="page-title">Oferta Académica</div>
+          <div class="page-subtitle">
+            Semestre 2026-I — Selecciona e inscribe tus materias disponibles.
+          </div>
+
+          <div class="search-bar-wrap">
+            <input
+              class="search-input"
+              placeholder="🔍  Buscar por nombre, código o docente..."
+              type="text"
+            />
+          </div>
+
+          <div class="oferta-table">
+            <div class="ot-header">
+              <span>Código</span><span>Curso / Docente</span><span>Horario</span
+              ><span>Aula</span><span>Créditos</span><span>Cupos</span
+              ><span>Acción</span>
+            </div>
+            <div class="ot-row">
+              <div class="ot-code">IS-401<br />Gr. A</div>
+              <div>
+                <div class="ot-name">Ingeniería de Software</div>
+                <div class="ot-sub">Prof. García, María L.</div>
+              </div>
+              <div class="ot-cell">Lun/Mié<br />9:00–11:00</div>
+              <div class="ot-cell">B-202</div>
+              <div class="ot-cell" style="text-align: center">3</div>
+              <div>
+                <div class="ot-cell">28/35</div>
+                <div class="cupos-bar">
+                  <div class="cupos-fill warn" style="width: 80%"></div>
+                </div>
+              </div>
+              <button
+                class="inscribir-btn"
+                onclick="
+                  openEnrollmentModal(
+                    'IS-401',
+                    'Ingeniería de Software',
+                    'Prof. García',
+                    'Lun/Mié 9:00-11:00',
+                    'B-202',
+                    3,
+                  )
+                "
+              >
+                Inscribir
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="page" id="page-horario">
+          <div class="page-title">Mi Horario Personal</div>
+          <div class="page-subtitle">
+            Visualiza y gestiona tus clases inscritas.
+          </div>
+
+          <div class="horario-top">
+            <div class="cr-counter">
+              <div>
+                <div
+                  style="
+                    font-size: 0.72rem;
+                    color: var(--text-light);
+                    font-weight: 700;
+                    text-transform: uppercase;
+                  "
+                >
+                  Créditos inscritos
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: baseline;
+                    gap: 6px;
+                    margin-top: 4px;
+                  "
+                >
+                  <div class="cr-num" id="cr-display">11</div>
+                  <div style="font-size: 0.8rem; color: var(--text-light)">
+                    / 20 máximo
+                  </div>
+                </div>
+                <div class="cr-bar">
+                  <div class="cr-fill" id="cr-bar-fill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grilla">
+            <div class="grilla-header">
+              <div>Hora</div>
+              <div>Lunes</div>
+              <div>Martes</div>
+              <div>Miércoles</div>
+              <div>Jueves</div>
+              <div>Viernes</div>
+            </div>
+            <div class="grilla-row">
+              <div class="grilla-time">7:00<br />9:00</div>
+              <div class="grilla-cell">
+                <div
+                  class="clase-block"
+                  style="background: #dbeafe; color: #1e40af"
+                >
+                  <button
+                    class="cb-cancel"
+                    onclick="cancelClassEnrollment(this, 'IS-301', 3)"
+                  >
+                    ✕
+                  </button>
+                  <div class="cb-code">IS-301</div>
+                  <div class="cb-name">Estructuras de Datos</div>
+                </div>
+              </div>
+              <div class="grilla-cell"></div>
+              <div class="grilla-cell">
+                <div
+                  class="clase-block"
+                  style="background: #dbeafe; color: #1e40af"
+                >
+                  <button
+                    class="cb-cancel"
+                    onclick="cancelClassEnrollment(this, 'IS-301', 3)"
+                  >
+                    ✕
+                  </button>
+                  <div class="cb-code">IS-301</div>
+                  <div class="cb-name">Estructuras de Datos</div>
+                </div>
+              </div>
+              <div class="grilla-cell"></div>
+              <div class="grilla-cell"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+      <div class="modal">
+        <div class="modal-icon">📋</div>
+        <div class="modal-title">Confirmar Inscripción</div>
+        <div class="modal-sub">
+          ¿Estás seguro de que deseas inscribirte en este grupo?
+        </div>
+        <div class="modal-info" id="modal-info"></div>
+        <div class="modal-btns">
+          <button class="modal-btn cancel" onclick="closeModal()">
+            Cancelar
+          </button>
+          <button class="modal-btn confirm" onclick="confirmEnrollment()">
+            ✓ Confirmar Inscripción
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">✓ Inscripción exitosa</div>
+
+    <script src="../js/dashboard.js"></script>
+  </body>
+</html>
