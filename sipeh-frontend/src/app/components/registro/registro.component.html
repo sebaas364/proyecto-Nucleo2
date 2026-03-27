@@ -1,0 +1,89 @@
+<div id="screen-login">
+  <div class="login-left">
+    <div class="ll-logo">
+      <div class="ll-icon">🎓</div>
+      <h1 class="ll-brand">SI<span>PEH</span></h1>
+      <p class="ll-tagline">Sistema Inteligente de Programación<br />de Espacios y Horarios</p>
+    </div>
+    <div class="ll-univ">
+      <p>Proyecto Núcleo 2</p>
+      <strong>Universidad El Bosque</strong>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-form">
+      <h2 class="lf-title">Crear Cuenta</h2>
+      <p class="lf-sub">Regístrate para gestionar tus horarios</p>
+
+      <form (ngSubmit)="registrar()">
+        <label class="lf-label">NOMBRE COMPLETO</label>
+        <div class="lf-input-wrap">
+          <span class="icon">👤</span>
+          <input
+            type="text"
+            name="nombre"
+            [(ngModel)]="usuario.nombre"
+            class="lf-input"
+            placeholder="Tu nombre"
+          />
+        </div>
+
+        <label class="lf-label">CORREO INSTITUCIONAL</label>
+        <div class="lf-input-wrap">
+          <span class="icon">✉️</span>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="usuario.email"
+            class="lf-input"
+            placeholder="usuario@unbosque.edu.co"
+          />
+        </div>
+
+        <label class="lf-label">CONTRASEÑA</label>
+        <div class="lf-input-wrap">
+          <span class="icon">🔒</span>
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="usuario.password"
+            class="lf-input"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <label class="lf-label">CONFIRMAR CONTRASEÑA</label>
+        <div class="lf-input-wrap">
+          <span class="icon">🛡️</span>
+          <input
+            type="password"
+            name="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            class="lf-input"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <p
+          *ngIf="mensajeError"
+          style="color: #e53e3e; font-size: 0.8rem; margin-bottom: 15px; font-weight: bold"
+        >
+          {{ mensajeError }}
+        </p>
+
+        <button type="submit" class="lf-btn">CREAR CUENTA</button>
+
+        <p class="lf-help">
+          ¿Ya tienes cuenta?
+          <span
+            (click)="irAlLogin()"
+            style="cursor: pointer; color: #0d6e6e; font-weight: bold; text-decoration: underline"
+          >
+            Inicia sesión
+          </span>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>

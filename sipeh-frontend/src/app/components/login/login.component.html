@@ -1,0 +1,59 @@
+<div id="screen-login">
+  <div class="login-left">
+    <div class="ll-logo">
+      <div class="ll-icon">📅</div>
+      <div class="ll-brand">SIP<span>EH</span></div>
+      <div class="ll-tagline">Sistema de Programación<br />de Horarios</div>
+    </div>
+    <div class="ll-univ">
+      <p>Universidad</p>
+      <strong>El Bosque — Facultad de Ingeniería</strong>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-form">
+      <div class="lf-title">Iniciar Sesión</div>
+      <div class="lf-sub">Accede a tu cuenta de estudiante SIPEH</div>
+
+      <form (ngSubmit)="handleLogin()">
+        <label class="lf-label">Usuario o correo electrónico</label>
+        <div class="lf-input-wrap">
+          <span class="icon">👤</span>
+          <input class="lf-input" type="email" name="email" 
+                 [(ngModel)]="datosLogin.email" placeholder="ejemplo@unbosque.edu.co" required />
+        </div>
+
+        <label class="lf-label">Contraseña</label>
+        <div class="lf-input-wrap">
+          <span class="icon">🔒</span>
+          <input class="lf-input" [type]="mostrarPassword ? 'text' : 'password'" 
+                 name="password" [(ngModel)]="datosLogin.password" placeholder="••••••" required />
+          <button type="button" class="lf-eye" (click)="togglePassword()">
+            {{ mostrarPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+
+        <div *ngIf="mensajeError" style="color: #e53e3e; font-size: 0.8rem; margin-bottom: 15px;">
+          {{ mensajeError }}
+        </div>
+
+        <button type="submit" class="lf-btn">Iniciar Sesión →</button>
+      </form>
+
+      <div class="lf-or">o</div>
+
+      <button class="lf-ms" type="button">
+        <div class="ms-logo">
+          <span style="background: #f25022"></span><span style="background: #7fba00"></span>
+          <span style="background: #00a4ef"></span><span style="background: #ffb900"></span>
+        </div>
+        Acceder con Microsoft 365
+      </button>
+
+      <div class="lf-help" style="margin-top: 15px">
+        ¿No tienes cuenta? <a routerLink="/">Regístrate aquí</a>
+      </div>
+    </div>
+  </div>
+</div>

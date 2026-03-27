@@ -1,0 +1,33 @@
+/* 1. Importamos las fuentes de Google */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/* 2. Tus variables globales */
+:root {
+  --teal: #0d6e6e;
+  --teal-dark: #094f4f;
+  --teal-light: #14a89a;
+  --teal-xlight: #e8f5f5;
+  --orange: #f57c2b;
+  --orange-light: #ffa05c;
+  --bg: #f4f7f7;
+  --white: #ffffff;
+  --gray: #e2eaea;
+  --text: #162828;
+  --text-mid: #3d5c5c;
+  --text-light: #7a9e9e;
+  --red: #e53e3e;
+}
+
+/* 3. Reset total para que Angular no deje márgenes blancos */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: "DM Sans", sans-serif;
+  background: var(--bg);
+}
