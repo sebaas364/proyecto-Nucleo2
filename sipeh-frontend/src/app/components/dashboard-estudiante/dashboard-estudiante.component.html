@@ -1,0 +1,182 @@
+<div class="screen-app">
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-name">SIP<span>EH</span></div>
+      <div class="sb-brand-sub">Universidad El Bosque</div>
+    </div>
+    <div class="sb-section">Principal</div>
+    <div class="sb-item" [class.active]="paginaActiva === 'dashboard'" (click)="cambiarPagina('dashboard', 'Dashboard')">
+      <span class="sb-icon">🏠</span> Inicio
+    </div>
+    <div class="sb-section">Académico</div>
+    <div class="sb-item" [class.active]="paginaActiva === 'oferta'" (click)="cambiarPagina('oferta', 'Oferta Académica')">
+      <span class="sb-icon">📚</span> Oferta Académica <span class="sb-badge">{{materiasDisponibles.length}}</span>
+    </div>
+    <div class="sb-item" [class.active]="paginaActiva === 'horario'" (click)="cambiarPagina('horario', 'Mi Horario')">
+      <span class="sb-icon">📅</span> Mi Horario
+    </div>
+    <div class="sb-spacer"></div>
+    <div class="sb-user" (click)="cerrarSesion()" style="cursor:pointer">
+      <span class="sb-icon">🚪</span> Cerrar Sesión
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">{{tituloTopbar}}</div>
+      <div class="topbar-actions">
+        <button class="tb-btn" (click)="cambiarPagina('oferta', 'Oferta Académica')">Inscribir Materias →</button>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'dashboard'">
+      <div class="page-title">¡Hola, {{usuarioActual?.nombre}}! 👋</div>
+      <div class="page-subtitle">Panel de control de tu semestre académico en la Universidad El Bosque.</div>
+
+      <div class="cards-row mt-4">
+        <div class="card" style="border-color:var(--teal);">
+          <div class="card-icon">📖</div>
+          <div class="card-val" style="color:var(--teal);">{{materiasDisponibles.length}}</div>
+          <div class="card-lbl">Oferta actual</div>
+          <div class="card-note" style="color:var(--text-light);">Materias habilitadas</div>
+        </div>
+        <div class="card" style="border-color:var(--orange);">
+          <div class="card-icon">🏅</div>
+          <div class="card-val" style="color:var(--orange);">{{obtenerCreditosTotales()}}</div>
+          <div class="card-lbl">Créditos inscritos</div>
+          <div class="card-note" style="color:var(--green); cursor:help" title="Límite máximo permitido: 20 créditos académicos por semestre.">✓ Dentro del límite</div>
+        </div>
+        <div class="card" style="border-color:var(--blue);">
+          <div class="card-icon">📅</div>
+          <div class="card-val" style="color:var(--blue);">{{materiasInscritas.length}}</div>
+          <div class="card-lbl">Materias inscritas</div>
+          <div class="card-note" style="color:var(--text-light);">Carga actual</div>
+        </div>
+        <div class="card" style="border-color:var(--green);">
+          <div class="card-icon">⏰</div>
+          <div class="card-val" style="color:var(--green);">15</div>
+          <div class="card-lbl">Días para cierre</div>
+          <div class="card-note" style="color:var(--yellow);">⚠ Sistema activo</div>
+        </div>
+      </div>
+
+      <div class="dash-grid mt-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        
+        <div class="dash-panel" style="background: white; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <div style="font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 16px;">📌 Próximos Eventos Académicos</div>
+          
+          <div style="display: flex; gap: 14px; align-items: center; padding: 14px; background: var(--teal-xlight); border-radius: 10px; margin-bottom: 12px; border-left: 4px solid var(--teal);">
+            <div style="font-family: 'Space Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--teal); text-align: center; min-width: 52px;">JUE<br>23 ABR</div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.85rem;">Exposición Sistemas Operacionales</div>
+              <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 2px;">Sistemas Especializados en Privacidad · Auditorio</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: center; padding: 14px; background: #eff6ff; border-radius: 10px; border-left: 4px solid var(--blue);">
+            <div style="font-family: 'Space Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--blue); text-align: center; min-width: 52px;">VIE<br>24 ABR</div>
+            <div>
+              <div style="font-weight: 700; font-size: 0.85rem;">Cierre de Plataforma SIPEH</div>
+              <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 2px;">Último día para modificaciones de horario</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-panel" style="background: white; border-radius: 12px; padding: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+          <div style="font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 16px;">📢 Avisos Universitarios</div>
+          
+          <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: #f0fdf4; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--green); font-size: 0.8rem;">
+            <div><strong>Semestre 2026-I:</strong> Te recordamos que el proceso de matrícula académica es obligatorio para todos los estudiantes regulares de Ingeniería.</div>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: #fffbeb; border-radius: 8px; border-left: 3px solid var(--yellow); font-size: 0.8rem;">
+            <div><strong>Actualización de Datos:</strong> Por favor verifica tu correo institucional en el sistema central de admisiones antes de finalizar la semana.</div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'oferta'">
+      <div class="page-title">Oferta Académica</div>
+      <div class="oferta-table mt-4">
+        <div class="ot-header">
+          <span>Código</span>
+          <span>Materia / Grupo</span>
+          <span>Horario</span>
+          <span style="text-align:center">Créditos</span>
+          <span>Cupos</span>
+          <span>Acción</span>
+        </div>
+        
+        <div class="ot-row" *ngFor="let materia of materiasDisponibles">
+          <div class="ot-code">{{materia.codigo}}</div>
+          <div>
+            <div class="ot-name">{{materia.nombre}}</div>
+            <div class="ot-sub" style="color:var(--teal); font-weight:bold;">{{materia.grupo}}</div>
+          </div>
+          <div class="ot-cell" style="font-family:'Space Mono',monospace;">{{materia.horario}}</div>
+          <div class="ot-cell" style="text-align:center;">{{materia.creditos}}</div>
+          
+          <div>
+            <span class="cupos-tag">Disp: {{materia.cupos}}</span>
+            <div class="cupos-bar">
+              <div class="cupos-fill" style="width:80%; background:var(--green);"></div>
+            </div>
+          </div>
+
+          <button class="inscribir-btn" (click)="inscribirMateria(materia)">Inscribir</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'horario'">
+      <div class="page-title">Mi Horario Semanal</div>
+      <div class="page-subtitle">Créditos actuales: <strong>{{obtenerCreditosTotales()}} / 20</strong></div>
+
+      <div class="oferta-table mt-4" *ngIf="materiasInscritas.length > 0">
+        <div class="ot-header" style="grid-template-columns: 120px 1fr 150px 100px 100px;">
+          <span>Código</span><span>Materia</span><span>Horario</span><span>Créditos</span><span>Acción</span>
+        </div>
+        <div class="ot-row" *ngFor="let inscrita of materiasInscritas" style="grid-template-columns: 120px 1fr 150px 100px 100px;">
+          <div class="ot-code">{{inscrita.codigo}}</div>
+          <div>
+            <div class="ot-name">{{inscrita.nombre}}</div>
+            <div class="ot-sub">{{inscrita.grupo}}</div>
+          </div>
+          <div class="ot-cell">{{inscrita.horario}}</div>
+          <div class="ot-cell" style="text-align:center; font-weight: bold; color: var(--teal);">{{inscrita.creditos}}</div>
+          <button class="inscribir-btn" style="background: var(--red);" (click)="cancelarInscripcion(inscrita)">Cancelar</button>
+        </div>
+      </div>
+
+      <div *ngIf="materiasInscritas.length === 0" style="padding: 40px; text-align: center; border: 2px dashed var(--gray); border-radius: 12px; color: var(--text-light); margin-top: 20px;">
+        📭 Aún no has inscrito materias.
+      </div>
+
+      <div class="grilla mt-4" *ngIf="materiasInscritas.length > 0">
+        <div class="grilla-header">
+          <div>Hora</div><div *ngFor="let dia of dias">{{dia}}</div>
+        </div>
+
+        <div class="grilla-row" *ngFor="let hora of horas">
+          <div class="grilla-time">{{hora}}</div>
+          
+          <div class="grilla-cell" *ngFor="let dia of dias">
+            <div *ngIf="obtenerMateriaEnCelda(dia, hora) as clase" 
+                 class="clase-block" 
+                 style="background:#e0f2fe; color:#0369a1; border-left: 4px solid #0ea5e9; position: relative;">
+              <div class="cb-code">{{clase.codigo}}</div>
+              <div class="cb-name" style="font-size:0.68rem; margin-top:4px;">{{clase.nombre}}</div>
+              <div style="font-size:0.6rem; margin-top:2px; opacity:0.8;">{{clase.grupo}}</div>
+              
+              <button (click)="cancelarInscripcion(clase)" 
+                      style="position:absolute; top:4px; right:4px; border:none; background:rgba(220,38,38,0.1); color:#dc2626; border-radius:4px; width:20px; height:20px; cursor:pointer; font-weight:bold;">×</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>    

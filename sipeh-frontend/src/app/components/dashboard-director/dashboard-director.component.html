@@ -1,0 +1,255 @@
+<div class="screen-app">
+  <aside class="sidebar" style="background: #063c3c;">
+    <div class="sb-brand">
+      <div class="sb-brand-name">SIP<span>EH</span></div>
+      <div class="sb-brand-sub">Admin · El Bosque</div>
+    </div>
+    
+    <div class="sb-section">Métricas</div>
+    <div class="sb-item" [class.active]="paginaActiva === 'dashboard'" (click)="cambiarPagina('dashboard', 'Dirección de Programa')">
+      <span class="sb-icon">📊</span> Resumen General
+    </div>
+    
+    <div class="sb-section">Gestión SIPEH</div>
+    <div class="sb-item" [class.active]="paginaActiva === 'materias'" (click)="cambiarPagina('materias', 'Gestión de Materias')">
+      <span class="sb-icon">📚</span> Oferta Académica <span class="sb-badge">{{materiasDisponibles.length}}</span>
+    </div>
+    <div class="sb-item" [class.active]="paginaActiva === 'aulas'" (click)="cambiarPagina('aulas', 'Gestión de Aulas e Infraestructura')">
+      <span class="sb-icon">🏢</span> Gestión de Aulas
+    </div>
+    <div class="sb-item" [class.active]="paginaActiva === 'docentes'" (click)="cambiarPagina('docentes', 'Plantilla Docente')">
+      <span class="sb-icon">👨‍🏫</span> Plantilla Docente
+    </div>
+    <div class="sb-item" [class.active]="paginaActiva === 'reportes'" (click)="cambiarPagina('reportes', 'Auditoría y Reportes')">
+      <span class="sb-icon">📑</span> Reportes
+    </div>
+
+    <div class="sb-spacer"></div>
+    <div class="sb-user" (click)="cerrarSesion()" style="cursor:pointer">
+      <span class="sb-icon">🚪</span> Cerrar Sesión
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">{{tituloTopbar}}</div>
+      <div class="topbar-actions">
+        <button *ngIf="paginaActiva === 'materias'" class="tb-btn" style="background: var(--orange);" (click)="cambiarPagina('materias', 'Gestión de Materias')">+ Nueva Materia</button>
+        <button *ngIf="paginaActiva === 'aulas'" class="tb-btn" style="background: var(--teal);" (click)="cambiarPagina('aulas', 'Gestión de Aulas e Infraestructura')">+ Registrar Aula</button>
+        <button *ngIf="paginaActiva === 'docentes'" class="tb-btn" style="background: var(--blue);" (click)="cambiarPagina('docentes', 'Plantilla Docente')">+ Nuevo Docente</button>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'dashboard'">
+      <div class="page-title">Bienvenido a la Dirección, {{usuarioActual?.nombre}}</div>
+      <div class="page-subtitle">Monitoreo global de Ingeniería de Sistemas — Semestre 2026-I</div>
+
+      <div class="cards-row mt-4">
+        <div class="card" style="border-left: 4px solid var(--blue); border-top:none;">
+          <div class="card-icon">👥</div>
+          <div class="card-val" style="color:var(--text);">452</div>
+          <div class="card-lbl">Estudiantes Activos</div>
+        </div>
+        <div class="card" style="border-left: 4px solid var(--orange); border-top:none;">
+          <div class="card-icon">👨‍🏫</div>
+          <div class="card-val" style="color:var(--text);">{{docentesDisponibles.length}}</div>
+          <div class="card-lbl">Docentes Asignados</div>
+        </div>
+        <div class="card" style="border-left: 4px solid var(--teal); border-top:none;">
+          <div class="card-icon">📚</div>
+          <div class="card-val" style="color:var(--text);">{{materiasDisponibles.length}}</div>
+          <div class="card-lbl">Materias Ofertadas</div>
+        </div>
+        <div class="card" style="border-left: 4px solid var(--green); border-top:none;">
+          <div class="card-icon">🏢</div>
+          <div class="card-val" style="color:var(--text);">{{aulasDisponibles.length}}</div>
+          <div class="card-lbl">Aulas Habilitadas</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'materias'">
+      <div class="page-title">Administración de Oferta Académica</div>
+      <div class="page-subtitle">Modifica, elimina o crea nuevas asignaturas para este periodo.</div>
+
+      <div class="dash-panel mt-4" style="background: white; padding: 20px; border-radius: 12px; border-top: 4px solid var(--orange); box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+        <div style="font-weight: 700; margin-bottom: 15px; color: var(--orange);">➕ Registrar Nueva Materia (Curso)</div>
+        <form (ngSubmit)="registrarMateria()" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; align-items: end;">
+          
+          <div>
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Código (US-09)</label>
+            <input type="text" [(ngModel)]="nuevaMateria.codigo" name="cod" placeholder="Ej: IS-801" style="width: 100%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div style="grid-column: span 2;">
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Nombre de la Materia (US-09)</label>
+            <input type="text" [(ngModel)]="nuevaMateria.nombre" name="nom" placeholder="Ej: Arquitectura de Software" style="width: 100%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Grupo</label>
+            <input type="text" [(ngModel)]="nuevaMateria.grupo" name="grp" placeholder="Ej: Gr. A" style="width: 100%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+
+          <div>
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Horario</label>
+            <input type="text" [(ngModel)]="nuevaMateria.horario" name="hor" placeholder="Ej: LUN 11-13" style="width: 100%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Créditos / Cupos</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="number" [(ngModel)]="nuevaMateria.creditos" name="cre" placeholder="Créditos" style="width: 50%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+              <input type="number" [(ngModel)]="nuevaMateria.cupos" name="cup" placeholder="Cupos" style="width: 50%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Frecuencia Semanal (US-10)</label>
+            <input type="number" [(ngModel)]="nuevaMateria.frecuenciaSemanal" name="fre" placeholder="Sesiones" style="width: 100%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Req. Especiales (US-11)</label>
+            <input type="text" [(ngModel)]="nuevaMateria.requisitosAula" name="req" placeholder="Ej: Lab Cisco" style="width: 100%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+
+          <div style="grid-column: span 2;">
+            <label style="font-size: 0.7rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Docente Asignado (US-06)</label>
+            <select [(ngModel)]="nuevaMateria.docente.id" name="doc" style="width: 100%; padding: 8px; border: 1px solid var(--gray); border-radius: 6px; background: white; outline: none;">
+              <option [ngValue]="null">Sin asignar...</option>
+              <option *ngFor="let doc of docentesDisponibles" [ngValue]="doc.id">{{doc.nombre}} ({{doc.vinculacion}})</option>
+            </select>
+          </div>
+          
+          <div style="grid-column: span 2; text-align: right; margin-top: 10px;">
+            <button type="submit" class="tb-btn" style="background: var(--orange);">Guardar Materia</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="oferta-table mt-4">
+        <div class="ot-header" style="grid-template-columns: 100px 1fr 120px 80px 100px 150px;">
+          <span>Código</span><span>Materia / Docente</span><span>Horario</span><span style="text-align:center">Créditos</span><span>Cupos</span><span>Acciones</span>
+        </div>
+        <div class="ot-row" *ngFor="let materia of materiasDisponibles" style="grid-template-columns: 100px 1fr 120px 80px 100px 150px;">
+          <div class="ot-code">{{materia.codigo}}</div>
+          <div>
+            <div class="ot-name">{{materia.nombre}}</div>
+            <div class="ot-sub" style="color:var(--teal); font-weight:bold;">
+              {{materia.grupo}} <span style="color:var(--text-light); font-weight:normal;">• Prof. {{materia.docente?.nombre || 'Sin asignar'}}</span>
+            </div>
+          </div>
+          <div class="ot-cell" style="font-family:'Space Mono',monospace;">{{materia.horario}}</div>
+          <div class="ot-cell" style="text-align:center;">{{materia.creditos}}</div>
+          <div class="ot-cell">Disp: {{materia.cupos}}</div>
+          <button style="padding: 6px 12px; background: #fee2e2; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: var(--red);" (click)="borrarMateria(materia.id)">🗑️ Borrar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'aulas'">
+      <div class="page-title">Infraestructura y Aulas</div>
+      <div class="page-subtitle">Administra los espacios físicos habilitados para dictar clases.</div>
+
+      <div class="dash-panel mt-4" style="background: white; padding: 20px; border-radius: 12px; border-top: 4px solid var(--teal); box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+        <div style="font-weight: 700; margin-bottom: 15px; color: var(--teal);">➕ Registrar Nueva Aula</div>
+        <form (ngSubmit)="registrarAula()" style="display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 15px; align-items: end;">
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Nombre / Código</label>
+            <input type="text" [(ngModel)]="nuevaAula.nombre" name="nombre" placeholder="Ej: Laboratorio MAC" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Capacidad</label>
+            <input type="number" [(ngModel)]="nuevaAula.capacidad" name="capacidad" placeholder="Ej: 30" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Características</label>
+            <input type="text" [(ngModel)]="nuevaAula.caracteristicas" name="caracteristicas" placeholder="Ej: Computadores Apple, Video Beam" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <button type="submit" class="tb-btn" style="height: 40px; background: var(--teal);">Guardar Aula</button>
+        </form>
+      </div>
+
+      <div class="oferta-table mt-4">
+        <div class="ot-header" style="grid-template-columns: 150px 100px 1fr 100px;">
+          <span>Aula</span><span style="text-align:center">Capacidad</span><span>Características</span><span>Acciones</span>
+        </div>
+        <div class="ot-row" *ngFor="let aula of aulasDisponibles" style="grid-template-columns: 150px 100px 1fr 100px;">
+          <div class="ot-code" style="color:var(--text);">{{aula.nombre}}</div>
+          <div class="ot-cell" style="text-align:center; font-weight:bold; color:var(--teal);">{{aula.capacidad}}</div>
+          <div class="ot-sub">{{aula.caracteristicas}}</div>
+          <button style="padding: 5px 10px; background: #fee2e2; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: var(--red); font-size: 0.7rem;" (click)="borrarAula(aula.id)">🗑️ Borrar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'docentes'">
+      <div class="page-title">Gestión de Plantilla Docente</div>
+      <div class="page-subtitle">Administra los profesores, su vinculación y disponibilidad horaria.</div>
+
+      <div class="dash-panel mt-4" style="background: white; padding: 20px; border-radius: 12px; border-top: 4px solid var(--blue); box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+        <div style="font-weight: 700; margin-bottom: 15px; color: var(--blue);">➕ Registrar Nuevo Docente</div>
+        <form (ngSubmit)="registrarDocente()" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; align-items: end;">
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Nombre Completo</label>
+            <input type="text" [(ngModel)]="nuevoDocente.nombre" name="d_nombre" placeholder="Ej: Alan Turing" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Correo Institucional</label>
+            <input type="email" [(ngModel)]="nuevoDocente.email" name="d_email" placeholder="Ej: aturing@unbosque.edu.co" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Contraseña Temporal</label>
+            <input type="password" [(ngModel)]="nuevoDocente.password" name="d_pass" placeholder="Contraseña de acceso" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Vinculación (US-05)</label>
+            <select [(ngModel)]="nuevoDocente.vinculacion" name="d_vinc" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px; background: white;">
+              <option value="">Seleccione...</option>
+              <option value="Tiempo Completo">Tiempo Completo</option>
+              <option value="Medio Tiempo">Medio Tiempo</option>
+              <option value="Catedrático">Catedrático</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Escalafón (US-05)</label>
+            <select [(ngModel)]="nuevoDocente.escalafon" name="d_esca" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px; background: white;">
+              <option value="">Seleccione...</option>
+              <option value="Profesor Titular">Profesor Titular</option>
+              <option value="Profesor Asistente">Profesor Asistente</option>
+              <option value="Profesor Auxiliar">Profesor Auxiliar</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: bold; color: var(--text-light); margin-bottom: 5px; display: block;">Restricciones de Horario (US-07)</label>
+            <input type="text" [(ngModel)]="nuevoDocente.restriccionesHorario" name="d_rest" placeholder="Ej: No dictar Lunes en la mañana" style="width: 100%; padding: 10px; border: 1px solid var(--gray); border-radius: 6px;">
+          </div>
+          <div style="grid-column: span 3; text-align: right; margin-top: 10px;">
+            <button type="submit" class="tb-btn" style="background: var(--blue);">Registrar Docente</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="oferta-table mt-4">
+        <div class="ot-header" style="grid-template-columns: 180px 1fr 140px 1fr 100px;">
+          <span>Docente</span><span>Correo / Acceso</span><span>Perfil</span><span>Restricciones</span><span>Acciones</span>
+        </div>
+        <div class="ot-row" *ngFor="let docente of docentesDisponibles" style="grid-template-columns: 180px 1fr 140px 1fr 100px;">
+          <div>
+            <div class="ot-name">{{docente.nombre}}</div>
+            <div class="ot-sub" style="color:var(--blue); font-weight:bold;">{{docente.escalafon || 'Sin asignar'}}</div>
+          </div>
+          <div class="ot-cell" style="font-family:'Space Mono',monospace; font-size: 0.7rem;">{{docente.email}}</div>
+          <div class="ot-cell" style="font-weight: 600;">{{docente.vinculacion || 'N/A'}}</div>
+          <div class="ot-sub" style="font-style: italic;">{{docente.restriccionesHorario || 'Sin restricciones'}}</div>
+          <button style="padding: 5px 10px; background: #fee2e2; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: var(--red); font-size: 0.7rem;" (click)="borrarDocente(docente.id)">🗑️ Desvincular</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'reportes'">
+      <div style="padding: 60px; text-align: center; border: 2px dashed var(--gray); border-radius: 12px; color: var(--text-light); margin-top: 20px;">
+        <div style="font-size: 2rem; margin-bottom: 10px;">🚧</div>
+        <strong>Módulo en Construcción</strong><br>
+        Esta funcionalidad se entregará en el siguiente sprint de desarrollo.
+      </div>
+    </div>
+
+  </div>
+</div>

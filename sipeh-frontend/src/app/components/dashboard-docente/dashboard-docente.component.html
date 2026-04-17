@@ -1,0 +1,191 @@
+<div class="screen-app">
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-name">SIP<span>EH</span></div>
+      <div class="sb-brand-sub">Portal Docente</div>
+    </div>
+
+    <div class="sb-section">Principal</div>
+    <div class="sb-item" [class.active]="paginaActiva === 'dashboard'" (click)="cambiarPagina('dashboard', 'Panel Docente')">
+      <span class="sb-icon">👨‍🏫</span> Inicio
+    </div>
+
+    <div class="sb-section">Gestión Académica</div>
+    <div class="sb-item" [class.active]="paginaActiva === 'grupos'" (click)="cambiarPagina('grupos', 'Mis Grupos Asignados')">
+      <span class="sb-icon">👥</span> Mis Grupos
+      <span class="sb-badge">{{ misMaterias.length }}</span>
+    </div>
+    <div class="sb-item" [class.active]="paginaActiva === 'horario'" (click)="cambiarPagina('horario', 'Horario de Enseñanza')">
+      <span class="sb-icon">📅</span> Horario de Clases
+    </div>
+
+    <div class="sb-section">Cuenta</div>
+    <div class="sb-item" (click)="cerrarSesion()">
+      <span class="sb-icon">🚪</span> Cerrar Sesión
+    </div>
+
+    <div class="sb-spacer"></div>
+    <div class="sb-user">
+      <div class="sb-avatar">{{ usuarioActual?.nombre?.charAt(0) || 'P' }}</div>
+      <div>
+        <div class="sb-uname">Prof. {{ usuarioActual?.nombre }}</div>
+        <div class="sb-urole">{{ usuarioActual?.rol }}</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title">{{ tituloTopbar }}</div>
+        <div class="topbar-sub">Semestre 2026-I · Facultad de Ingeniería</div>
+      </div>
+      <div class="topbar-actions">
+        <div class="tb-icon-btn">🔔</div>
+        <button class="tb-btn" (click)="cambiarPagina('grupos', 'Mis Grupos Asignados')">Ver mis listas →</button>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'dashboard'">
+      <div class="page-title">¡Hola de nuevo, Profesor(a) {{ usuarioActual?.nombre }}! 👋</div>
+      <div class="page-subtitle">Resumen de tu carga académica para el Semestre 2026-I.</div>
+
+      <div class="cards-row">
+        <div class="card" style="border-color:var(--teal);">
+          <div class="card-icon">👥</div>
+          <div class="card-val" style="color:var(--teal);">{{ misMaterias.length }}</div>
+          <div class="card-lbl">Cursos Asignados</div>
+          <div class="card-note" style="color:var(--text-light);">En sistema SIPEH</div>
+        </div>
+        <div class="card" style="border-color:var(--orange);">
+          <div class="card-icon">⏱️</div>
+          <div class="card-val" style="color:var(--orange);">{{ obtenerTotalHoras() }}</div>
+          <div class="card-lbl">Horas Semanales</div>
+          <div class="card-note" style="color:var(--green);">✓ Carga activa</div>
+        </div>
+        <div class="card" style="border-color:var(--blue);">
+          <div class="card-icon">🏫</div>
+          <div class="card-val" style="color:var(--blue); font-size: 1.2rem;">Sede A</div>
+          <div class="card-lbl">Ubicación Principal</div>
+          <div class="card-note" style="color:var(--text-light);">Sede Principal</div>
+        </div>
+        <div class="card" style="border-color:var(--green);">
+          <div class="card-icon">📝</div>
+          <div class="card-val" style="color:var(--green);">{{ obtenerTotalEstudiantes() }}</div>
+          <div class="card-lbl">Alumnos Tot.</div>
+          <div class="card-note" style="color:var(--text-light);">Capacidad máxima</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-panel">
+          <div class="dp-title">📅 Tus Próximas Clases a Dictar</div>
+          
+          <div *ngIf="misMaterias.length === 0" style="padding: 20px; text-align: center; color: var(--text-light);">
+            No tienes cursos asignados aún.
+          </div>
+
+          <div class="next-class" *ngFor="let materia of misMaterias | slice:0:3">
+            <div class="nc-time">{{ materia.horario.substring(0,3) }}<br>{{ materia.horario.substring(4,6) }}:00</div>
+            <div>
+              <div class="nc-course">{{ materia.codigo }} — {{ materia.nombre }}</div>
+              <div class="nc-detail">{{ materia.grupo }} · {{ materia.requisitosAula || 'Aula Normal' }} · {{ materia.cupos }} estudiantes max.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-panel">
+          <div class="dp-title">📢 Avisos de Dirección</div>
+          <div class="alert-item info">
+            <div class="alert-dot" style="background:var(--blue);"></div>
+            <div><strong>SIPEH Activo:</strong> El periodo de inscripción de estudiantes se encuentra habilitado.</div>
+          </div>
+          <div class="alert-item warn">
+            <div class="alert-dot" style="background:var(--yellow);"></div>
+            <div><strong>Cierre de Actas:</strong> Recuerde subir las notas del primer corte antes del 30 de abril.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'grupos'">
+      <div class="page-title">Mis Grupos Asignados</div>
+      <div class="page-subtitle">Listado de materias que tienes a cargo este semestre.</div>
+      
+      <div class="oferta-table mt-4" *ngIf="misMaterias.length > 0">
+        <div class="ot-header" style="grid-template-columns: 100px 1fr 140px 100px 140px;">
+          <span>Código</span><span>Materia / Grupo</span><span>Horario</span><span style="text-align:center">Créditos</span><span>Acción</span>
+        </div>
+        <div class="ot-row" *ngFor="let materia of misMaterias" style="grid-template-columns: 100px 1fr 140px 100px 140px;">
+          <div class="ot-code">{{materia.codigo}}</div>
+          <div><div class="ot-name">{{materia.nombre}}</div><div class="ot-sub" style="color:var(--teal); font-weight:bold;">{{materia.grupo}}</div></div>
+          <div class="ot-cell" style="font-family:'Space Mono',monospace;">{{materia.horario}}</div>
+          <div class="ot-cell" style="text-align:center;">{{materia.creditos}}</div>
+          
+          <button class="inscribir-btn" (click)="verAlumnos(materia)">Ver Alumnos →</button>
+        </div>
+      </div>
+
+      <div *ngIf="misMaterias.length === 0" style="padding: 40px; text-align: center; border: 2px dashed var(--gray); border-radius: 12px; color: var(--text-light); margin-top: 20px;">
+        📭 Aún no te han asignado materias. Consulta con Dirección.
+      </div>
+    </div>
+
+    <div class="page" *ngIf="paginaActiva === 'horario'">
+      <div class="page-title">Mi Horario de Enseñanza</div>
+      <div class="page-subtitle">Visualiza los espacios asignados para dictar tus clases en la semana.</div>
+      
+      <div class="grilla mt-4" *ngIf="misMaterias.length > 0">
+        <div class="grilla-header">
+          <div>Hora</div><div *ngFor="let dia of dias">{{dia}}</div>
+        </div>
+        <div class="grilla-row" *ngFor="let hora of horas">
+          <div class="grilla-time">{{hora}}</div>
+          <div class="grilla-cell" *ngFor="let dia of dias">
+            <div *ngIf="obtenerMateriaEnCelda(dia, hora) as clase" class="clase-block">
+              <div class="cb-code">{{clase.codigo}}</div>
+              <div class="cb-name" style="font-size:0.68rem; margin-top:4px;">{{clase.nombre}}</div>
+              <div style="font-size:0.6rem; margin-top:2px; opacity:0.8;">{{clase.grupo}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="misMaterias.length === 0" style="padding: 40px; text-align: center; border: 2px dashed var(--gray); border-radius: 12px; color: var(--text-light); margin-top: 20px;">
+        📭 Tu horario está vacío.
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="materiaSeleccionada" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px);">
+    <div style="background: white; border-radius: 12px; width: 500px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeUp 0.3s ease;">
+      
+      <div style="background: var(--teal-dark); padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-family: 'Space Mono', monospace; font-size: 0.8rem; opacity: 0.8; font-weight: 700;">{{ materiaSeleccionada.codigo }} • {{ materiaSeleccionada.grupo }}</div>
+          <div style="font-size: 1.2rem; font-weight: bold; margin-top: 5px;">{{ materiaSeleccionada.nombre }}</div>
+        </div>
+        <button (click)="cerrarListaAlumnos()" style="background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; padding: 0 5px; line-height: 1;">&times;</button>
+      </div>
+
+      <div style="padding: 0; overflow-y: auto; background: var(--bg); flex: 1;">
+        <div *ngIf="alumnosInscritos.length === 0" style="text-align: center; color: var(--text-light); padding: 40px 20px;">
+          <div style="font-size: 2rem; margin-bottom: 10px;">📭</div>
+          <strong>Sin inscripciones</strong><br>Aún no hay estudiantes en este curso.
+        </div>
+
+        <div *ngFor="let alumno of alumnosInscritos; let i = index" style="display: flex; align-items: center; gap: 15px; padding: 15px 20px; background: white; border-bottom: 1px solid var(--gray);">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--teal-xlight); color: var(--teal); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
+            {{ i + 1 }}
+          </div>
+          <div>
+            <div style="font-weight: bold; font-size: 0.9rem; color: var(--text);">{{ alumno.nombre }}</div>
+            <div style="font-size: 0.75rem; color: var(--text-light); font-family: 'Space Mono', monospace; margin-top: 2px;">{{ alumno.email }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

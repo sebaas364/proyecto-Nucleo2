@@ -23,7 +23,7 @@
 #screen-login {
   display: flex;
   width: 100%;
-  min-height: 100vh; /* Ocupa todo el alto del navegador */
+  min-height: 100vh;
   align-items: stretch;
   background: var(--bg);
 }
@@ -86,7 +86,7 @@
   justify-content: center;
   font-size: 2.4rem;
   margin: 0 auto 24px;
-  backdrop-filter: blur(88px);
+  backdrop-filter: blur(8px);
 }
 
 .ll-brand {
