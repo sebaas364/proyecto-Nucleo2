@@ -17,6 +17,7 @@
       <p class="lf-sub">Regístrate para gestionar tus horarios</p>
 
       <form (ngSubmit)="registrar()">
+        
         <label class="lf-label">NOMBRE COMPLETO</label>
         <div class="lf-input-wrap">
           <span class="icon">👤</span>
@@ -40,7 +41,7 @@
             placeholder="usuario@unbosque.edu.co"
           />
         </div>
-
+        
         <label class="lf-label">CONTRASEÑA</label>
         <div class="lf-input-wrap">
           <span class="icon">🔒</span>
@@ -65,11 +66,12 @@
           />
         </div>
 
-        <p
-          *ngIf="mensajeError"
-          style="color: #e53e3e; font-size: 0.8rem; margin-bottom: 15px; font-weight: bold"
-        >
-          {{ mensajeError }}
+        <p *ngIf="mensajeError" style="color: #e53e3e; font-size: 0.85rem; margin-bottom: 15px; font-weight: bold; padding: 10px; background-color: #fef2f2; border-radius: 8px;">
+          ⚠ {{ mensajeError }}
+        </p>
+
+        <p *ngIf="mensajeExito" style="color: #16a34a; font-size: 0.85rem; margin-bottom: 15px; font-weight: bold; padding: 10px; background-color: #f0fdf4; border-radius: 8px;">
+          ✓ {{ mensajeExito }}
         </p>
 
         <button type="submit" class="lf-btn">CREAR CUENTA</button>
