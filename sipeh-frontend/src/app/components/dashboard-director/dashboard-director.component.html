@@ -41,29 +41,63 @@
     </div>
 
     <div class="page" *ngIf="paginaActiva === 'dashboard'">
-      <div class="page-title">Bienvenido a la Dirección, {{usuarioActual?.nombre}}</div>
+      
+      <div class="page-title" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>Bienvenido a la Dirección, {{usuarioActual?.nombre || 'Decano'}}</span>
+        <button class="tb-btn" style="background: var(--teal); font-size: 0.7rem;" (click)="cargarEstadisticas()">↻ Forzar Actualización</button>
+      </div>
       <div class="page-subtitle">Monitoreo global de Ingeniería de Sistemas — Semestre 2026-I</div>
 
       <div class="cards-row mt-4">
+        
         <div class="card" style="border-left: 4px solid var(--blue); border-top:none;">
           <div class="card-icon">👥</div>
-          <div class="card-val" style="color:var(--text);">452</div>
-          <div class="card-lbl">Estudiantes Activos</div>
+          <div class="card-val" style="color:var(--text);">{{ dashboardData?.totalEstudiantesActivos || 0 }}</div>
+          <div class="card-lbl">Estudiantes Matriculados</div>
         </div>
+        
         <div class="card" style="border-left: 4px solid var(--orange); border-top:none;">
           <div class="card-icon">👨‍🏫</div>
-          <div class="card-val" style="color:var(--text);">{{docentesDisponibles.length}}</div>
+          <div class="card-val" style="color:var(--text);">{{ docentesDisponibles?.length || 0 }}</div>
           <div class="card-lbl">Docentes Asignados</div>
         </div>
+        
         <div class="card" style="border-left: 4px solid var(--teal); border-top:none;">
           <div class="card-icon">📚</div>
-          <div class="card-val" style="color:var(--text);">{{materiasDisponibles.length}}</div>
+          <div class="card-val" style="color:var(--text);">{{ dashboardData?.totalMateriasOfertadas || 0 }}</div>
           <div class="card-lbl">Materias Ofertadas</div>
         </div>
+        
         <div class="card" style="border-left: 4px solid var(--green); border-top:none;">
           <div class="card-icon">🏢</div>
-          <div class="card-val" style="color:var(--text);">{{aulasDisponibles.length}}</div>
+          <div class="card-val" style="color:var(--text);">{{ aulasDisponibles?.length || 0 }}</div>
           <div class="card-lbl">Aulas Habilitadas</div>
+        </div>
+      </div>
+
+      <div class="dash-panel mt-4" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+        <div style="font-weight: 700; margin-bottom: 15px; color: var(--text);">📈 Análisis de Ocupación Académica</div>
+        
+        <div class="oferta-table">
+          <div class="ot-header" style="grid-template-columns: 50px 1fr 150px 150px;">
+            <span>#</span><span>Nombre de la Asignatura</span><span style="text-align:center;">Total Inscritos</span><span>Estado de Grupo</span>
+          </div>
+          
+          <div class="ot-row" *ngFor="let metrica of dashboardData?.metricasMaterias || []; let i = index" style="grid-template-columns: 50px 1fr 150px 150px;">
+            <div class="ot-cell" style="font-weight:bold;">{{ i + 1 }}</div>
+            <div class="ot-name" style="color:var(--teal);">{{ metrica.nombreMateria }}</div>
+            <div class="ot-cell" style="text-align:center; font-family:'Space Mono',monospace; font-size:1rem; font-weight:bold;">
+              {{ metrica.totalInscritos }}
+            </div>
+            <div>
+              <span *ngIf="metrica.totalInscritos < 5" style="background: #fef08a; color: #854d0e; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight:bold;">Baja Demanda</span>
+              <span *ngIf="metrica.totalInscritos >= 5" style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight:bold;">Óptimo</span>
+            </div>
+          </div>
+
+          <div *ngIf="!dashboardData?.metricasMaterias?.length" style="padding: 20px; text-align: center; color: var(--text-light); font-size: 0.8rem;">
+            Aún no hay métricas para mostrar en este semestre.
+          </div>
         </div>
       </div>
     </div>
