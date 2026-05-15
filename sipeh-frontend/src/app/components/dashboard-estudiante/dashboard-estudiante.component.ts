@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { Router } from '@angular/router';
 import { MateriaService } from '../../services/materia.service';
 import { InscripcionService } from '../../services/inscripcion.service';
@@ -7,14 +7,18 @@ import { InscripcionService } from '../../services/inscripcion.service';
 @Component({
   selector: 'app-dashboard-estudiante',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './dashboard-estudiante.component.html',
   styleUrl: './dashboard-estudiante.component.css',
 })
 export class DashboardEstudianteComponent implements OnInit {
+  private router = inject(Router);
+  private materiaService = inject(MateriaService);
+  private inscripcionService = inject(InscripcionService);
+
   usuarioActual: any = null;
-  paginaActiva: string = 'dashboard';
-  tituloTopbar: string = 'Dashboard';
+  paginaActiva = 'dashboard';
+  tituloTopbar = 'Dashboard';
 
   materiasDisponibles: any[] = [];
   inscripciones: any[] = []; // Guarda la conexión real con la base de datos (IDs de inscripción)
@@ -22,12 +26,6 @@ export class DashboardEstudianteComponent implements OnInit {
 
   dias: string[] = ['LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB'];
   horas: string[] = ['07-09', '09-11', '11-13', '14-16', '16-18', '18-20'];
-
-  constructor(
-    private router: Router,
-    private materiaService: MateriaService,
-    private inscripcionService: InscripcionService,
-  ) {}
 
   ngOnInit(): void {
     const usuarioGuardado = localStorage.getItem('usuarioSIPEH');
@@ -100,7 +98,7 @@ export class DashboardEstudianteComponent implements OnInit {
       next: (nuevaInscripcion) => {
         alert('✅ ¡Materia inscrita exitosamente!');
         this.inscripciones.push(nuevaInscripcion);
-        this.materiasInscritas.push(materia); 
+        this.materiasInscritas.push(materia);
       },
       error: (err) => {
         console.error(err);

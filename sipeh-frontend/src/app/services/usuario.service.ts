@@ -1,21 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsuarioService {
-  // Esta es la ruta exacta de tu Spring Boot
-  private apiUrl = 'http://localhost:8080/api/usuarios'; 
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) { }
+  // Esta es la ruta exacta de tu Spring Boot
+  private apiUrl = 'http://localhost:8080/api/usuarios';
 
   // Método para guardar un usuario nuevo
   registrarUsuario(usuario: any): Observable<any> {
     return this.http.post(this.apiUrl, usuario);
   }
   login(datos: any): Observable<any> {
-  return this.http.post(`${this.apiUrl}/login`, datos);
-}
+    return this.http.post(`${this.apiUrl}/login`, datos);
+  }
 }
