@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { RegistroComponent } from './components/registro/registro.component';
 import { LoginComponent } from './components/login/login.component';
-
 // Importamos los nuevos componentes de los dashboards
 import { DashboardEstudianteComponent } from './components/dashboard-estudiante/dashboard-estudiante.component';
 import { DashboardDocenteComponent } from './components/dashboard-docente/dashboard-docente.component';
@@ -19,4 +18,5 @@ export const routes: Routes = [
   
   // Opcional: Si escriben una ruta que no existe, los mandamos al login
   { path: '**', redirectTo: 'login', pathMatch: 'full' }
+
 ];
