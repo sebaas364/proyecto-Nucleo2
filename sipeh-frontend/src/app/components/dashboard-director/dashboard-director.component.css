@@ -277,7 +277,7 @@
   font-weight: 600;
 }
 
-/* TABLA OFERTA Y MATERIAS INSCRITAS (6 COLUMNAS) */
+/* TABLA OFERTA Y MATERIAS INSCRITAS */
 .oferta-table {
   background: white;
   border-radius: 12px;
@@ -366,7 +366,7 @@
   transform: translateY(-1px);
 }
 
-/* GRILLA DEL HORARIO (CORREGIDA A 6 DÍAS) */
+/* GRILLA DEL HORARIO */
 .grilla {
   background: white;
   border-radius: 12px;

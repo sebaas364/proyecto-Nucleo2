@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InscripcionService {
-  private apiUrl = 'http://localhost:8080/api/inscripciones';
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) { }
+  private apiUrl = 'http://localhost:8080/api/inscripciones';
 
   // Buscar materias de un estudiante
   obtenerPorEstudiante(estudianteId: number): Observable<any> {
@@ -25,7 +25,7 @@ export class InscripcionService {
     // Mandamos los IDs para que Java construya las relaciones @ManyToOne
     return this.http.post(this.apiUrl, {
       estudiante: { id: estudianteId },
-      materia: { id: materiaId }
+      materia: { id: materiaId },
     });
   }
 

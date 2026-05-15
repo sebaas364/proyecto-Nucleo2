@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+
 import { Router } from '@angular/router';
 import { MateriaService } from '../../services/materia.service';
 import { InscripcionService } from '../../services/inscripcion.service';
@@ -7,14 +7,18 @@ import { InscripcionService } from '../../services/inscripcion.service';
 @Component({
   selector: 'app-dashboard-estudiante',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './dashboard-estudiante.component.html',
-  styleUrl: './dashboard-estudiante.component.css'
+  styleUrl: './dashboard-estudiante.component.css',
 })
 export class DashboardEstudianteComponent implements OnInit {
+  private router = inject(Router);
+  private materiaService = inject(MateriaService);
+  private inscripcionService = inject(InscripcionService);
+
   usuarioActual: any = null;
-  paginaActiva: string = 'dashboard';
-  tituloTopbar: string = 'Dashboard';
+  paginaActiva = 'dashboard';
+  tituloTopbar = 'Dashboard';
 
   materiasDisponibles: any[] = [];
   inscripciones: any[] = []; // Guarda la conexión real con la base de datos (IDs de inscripción)
@@ -22,12 +26,6 @@ export class DashboardEstudianteComponent implements OnInit {
 
   dias: string[] = ['LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB'];
   horas: string[] = ['07-09', '09-11', '11-13', '14-16', '16-18', '18-20'];
-
-  constructor(
-    private router: Router,
-    private materiaService: MateriaService,
-    private inscripcionService: InscripcionService
-  ) {}
 
   ngOnInit(): void {
     const usuarioGuardado = localStorage.getItem('usuarioSIPEH');
@@ -41,12 +39,12 @@ export class DashboardEstudianteComponent implements OnInit {
   }
 
   cargarMaterias(): void {
-    this.materiaService.obtenerMaterias().subscribe(datos => this.materiasDisponibles = datos);
+    this.materiaService.obtenerMaterias().subscribe((datos) => (this.materiasDisponibles = datos));
   }
 
   // Consulta en Java las materias reales del estudiante
   cargarInscripciones(): void {
-    this.inscripcionService.obtenerPorEstudiante(this.usuarioActual.id).subscribe(datos => {
+    this.inscripcionService.obtenerPorEstudiante(this.usuarioActual.id).subscribe((datos) => {
       this.inscripciones = datos;
       this.materiasInscritas = datos.map((ins: any) => ins.materia);
     });
@@ -59,7 +57,9 @@ export class DashboardEstudianteComponent implements OnInit {
   inscribirMateria(materia: any): void {
     // 1. Validación de seguridad: Si la materia no tiene horario, bloqueamos la inscripción
     if (!materia.horario) {
-      alert('❌ Esta materia no tiene un horario asignado por la dirección. No se puede inscribir.');
+      alert(
+        '❌ Esta materia no tiene un horario asignado por la dirección. No se puede inscribir.',
+      );
       return;
     }
 
@@ -69,24 +69,27 @@ export class DashboardEstudianteComponent implements OnInit {
       return;
     }
 
-    // 3. Validación de Materia Repetida
-    if (this.materiasInscritas.some(m => m.id === materia.id)) {
-      alert('⚠️ Ya tienes inscrita esta materia.');
+    // 3. Validación de Materia Repetida (¡CORREGIDA AQUÍ! 🚀)
+    // Ahora compara el nombre exacto de la materia para bloquear grupos diferentes
+    if (this.materiasInscritas.some((m) => m.nombre === materia.nombre)) {
+      alert(`⚠️ Ya tienes inscrita la materia "${materia.nombre}" en otro grupo.`);
       return;
     }
 
     // 4. Validación de Cruce de Horario (Blindada contra nulls)
-    const horarioMateria = materia.horario || "";
+    const horarioMateria = materia.horario || '';
     const partes = horarioMateria.split(' ');
     const dia = partes[0];
-    const horaInicio = partes[1] ? partes[1].split('-')[0] : "";
+    const horaInicio = partes[1] ? partes[1].split('-')[0] : '';
 
-    const cruce = this.materiasInscritas.find(m => 
-      m.horario && m.horario.includes(dia) && m.horario.includes(horaInicio)
+    const cruce = this.materiasInscritas.find(
+      (m) => m.horario && m.horario.includes(dia) && m.horario.includes(horaInicio),
     );
 
     if (cruce) {
-      alert(`❌ CRUCE DE HORARIO: No puedes inscribir "${materia.nombre}" porque choca con "${cruce.nombre}".`);
+      alert(
+        `❌ CRUCE DE HORARIO: No puedes inscribir "${materia.nombre}" porque choca con "${cruce.nombre}".`,
+      );
       return;
     }
 
@@ -95,25 +98,27 @@ export class DashboardEstudianteComponent implements OnInit {
       next: (nuevaInscripcion) => {
         alert('✅ ¡Materia inscrita exitosamente!');
         this.inscripciones.push(nuevaInscripcion);
-        this.materiasInscritas.push(nuevaInscripcion.materia);
+        this.materiasInscritas.push(materia);
       },
       error: (err) => {
         console.error(err);
         alert('❌ Hubo un error al guardar tu inscripción en el sistema.');
-      }
+      },
     });
   }
 
   cancelarInscripcion(materia: any): void {
-    if(confirm(`¿Estás seguro de cancelar tu inscripción a ${materia.nombre}?`)) {
+    if (confirm(`¿Estás seguro de cancelar tu inscripción a ${materia.nombre}?`)) {
       // Encontramos el ID real de la inscripción en la base de datos
-      const inscripcionAEliminar = this.inscripciones.find(ins => ins.materia.id === materia.id);
-      
-      if(inscripcionAEliminar) {
+      const inscripcionAEliminar = this.inscripciones.find((ins) => ins.materia.id === materia.id);
+
+      if (inscripcionAEliminar) {
         this.inscripcionService.cancelarInscripcion(inscripcionAEliminar.id).subscribe(() => {
           // Actualizamos la vista instantáneamente
-          this.inscripciones = this.inscripciones.filter(ins => ins.id !== inscripcionAEliminar.id);
-          this.materiasInscritas = this.materiasInscritas.filter(m => m.id !== materia.id);
+          this.inscripciones = this.inscripciones.filter(
+            (ins) => ins.id !== inscripcionAEliminar.id,
+          );
+          this.materiasInscritas = this.materiasInscritas.filter((m) => m.id !== materia.id);
           alert('🗑️ Inscripción cancelada.');
         });
       }
@@ -123,14 +128,14 @@ export class DashboardEstudianteComponent implements OnInit {
   // Lógica de la grilla (Blindada contra nulls)
   obtenerMateriaEnCelda(dia: string, hora: string): any {
     const prefijoHora = hora.split('-')[0];
-    return this.materiasInscritas.find(m => 
-      m.horario && m.horario.includes(dia) && m.horario.includes(prefijoHora)
+    return this.materiasInscritas.find(
+      (m) => m.horario && m.horario.includes(dia) && m.horario.includes(prefijoHora),
     );
   }
 
   cambiarPagina(pagina: string, titulo: string): void {
     this.paginaActiva = pagina;
-    if(titulo) this.tituloTopbar = titulo;
+    if (titulo) this.tituloTopbar = titulo;
   }
 
   cerrarSesion(): void {

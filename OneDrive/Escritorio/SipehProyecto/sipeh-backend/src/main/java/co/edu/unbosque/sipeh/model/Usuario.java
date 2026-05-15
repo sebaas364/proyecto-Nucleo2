@@ -27,6 +27,15 @@ public class Usuario {
 	@Column(nullable = false, length = 50)
 	private String rol; // "ESTUDIANTE", "DOCENTE", "DIRECTOR"
 
+	@Column(length = 50)
+	private String vinculacion;
+
+	@Column(length = 50)
+	private String escalafon;
+
+	@Column(length = 255)
+	private String restriccionesHorario;
+
 	public Long getId() {
 		return id;
 	}
@@ -66,5 +75,31 @@ public class Usuario {
 	public void setRol(String rol) {
 		this.rol = rol;
 	}
+
+	public String getVinculacion() {
+		return vinculacion;
+	}
+
+	public void setVinculacion(String vinculacion) {
+		this.vinculacion = vinculacion;
+	}
+
+	public String getEscalafon() {
+		return escalafon;
+	}
+
+	public void setEscalafon(String escalafon) {
+		this.escalafon = escalafon;
+	}
+
+	public String getRestriccionesHorario() {
+		return restriccionesHorario;
+	}
+
+	public void setRestriccionesHorario(String restriccionesHorario) {
+		this.restriccionesHorario = restriccionesHorario;
+	}
+	
+	
 
 }
