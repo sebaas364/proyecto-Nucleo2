@@ -1,50 +1,34 @@
-package co.edu.unbosque.sipeh.model;
+package co.edu.unbosque.sipeh.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+public class MateriaDTO {
 
-@Entity
-@Table(name = "materias")
-public class Materia {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(nullable = false, unique = true, length = 20)
 	private String codigo;
-
-	@Column(nullable = false, length = 100)
 	private String nombre;
-
-	@Column(nullable = false)
 	private Integer creditos;
-
-	@Column(nullable = false)
 	private Integer cupos;
-
-	@Column(length = 10)
 	private String grupo;
-
-	@Column(length = 50)
 	private String horario;
-
-	@Column(nullable = false, columnDefinition = "integer default 1")
 	private Integer frecuenciaSemanal;
-
-	@Column(length = 100)
 	private String requisitosAula;
+	private Long docenteId; 
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "docente_id")
-	private Usuario docente;
+	public MateriaDTO() {
+	}
+
+	public MateriaDTO(Long id, String codigo, String nombre, Integer creditos, Integer cupos, String grupo,
+			String horario, Integer frecuenciaSemanal, String requisitosAula, Long docenteId) {
+		this.id = id;
+		this.codigo = codigo;
+		this.nombre = nombre;
+		this.creditos = creditos;
+		this.cupos = cupos;
+		this.grupo = grupo;
+		this.horario = horario;
+		this.frecuenciaSemanal = frecuenciaSemanal;
+		this.requisitosAula = requisitosAula;
+		this.docenteId = docenteId;
+	}
 
 	// --- GETTERS Y SETTERS ---
 	public Long getId() {
@@ -119,11 +103,11 @@ public class Materia {
 		this.requisitosAula = requisitosAula;
 	}
 
-	public Usuario getDocente() {
-		return docente;
+	public Long getDocenteId() {
+		return docenteId;
 	}
 
-	public void setDocente(Usuario docente) {
-		this.docente = docente;
+	public void setDocenteId(Long docenteId) {
+		this.docenteId = docenteId;
 	}
 }

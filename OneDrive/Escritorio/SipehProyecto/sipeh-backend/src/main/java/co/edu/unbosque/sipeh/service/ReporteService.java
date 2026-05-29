@@ -23,22 +23,18 @@ public class ReporteService {
 		DecanoDashboardDTO dashboard = new DecanoDashboardDTO();
 
 		try {
+		
+			long totalEstudiantes = inscripcionRepository.countEstudiantesUnicosInscritos();
+			dashboard.setTotalEstudiantesActivos(totalEstudiantes);
 
-			Long totalEstudiantes = inscripcionRepository.countEstudiantesUnicosInscritos();
-			dashboard.setTotalEstudiantesActivos(totalEstudiantes != null ? totalEstudiantes : 0L);
+			long totalMaterias = materiaRepository.count();
+			dashboard.setTotalMateriasOfertadas(totalMaterias);
 
-			Long totalMaterias = materiaRepository.count();
-			dashboard.setTotalMateriasOfertadas(totalMaterias != null ? totalMaterias : 0L);
-
+			
 			List<MateriaStatsDTO> metricas = inscripcionRepository.countInscritosPorMateria();
-			if (metricas == null || metricas.isEmpty()) {
-				dashboard.setMetricasMaterias(new ArrayList<>());
-			} else {
-				dashboard.setMetricasMaterias(metricas);
-			}
+			dashboard.setMetricasMaterias(metricas);
 
 		} catch (Exception e) {
-
 			dashboard.setTotalEstudiantesActivos(0L);
 			dashboard.setTotalMateriasOfertadas(0L);
 			dashboard.setMetricasMaterias(new ArrayList<>());
