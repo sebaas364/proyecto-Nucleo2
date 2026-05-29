@@ -1,69 +1,57 @@
 package co.edu.unbosque.sipeh.controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import co.edu.unbosque.sipeh.model.Usuario;
-import co.edu.unbosque.sipeh.repository.UsuarioRepository;
+import org.springframework.web.bind.annotation.*;
+import co.edu.unbosque.sipeh.dto.LoginDTO;
+import co.edu.unbosque.sipeh.dto.UsuarioDTO;
+import co.edu.unbosque.sipeh.dto.UsuarioRegistroDTO;
+import co.edu.unbosque.sipeh.service.UsuarioService;
 
 @RestController
 @RequestMapping("/api/usuarios")
-
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private UsuarioService usuarioService;
 
 	@GetMapping
-	public List<Usuario> listarUsuarios() {
-		return usuarioRepository.findAll();
+	public ResponseEntity<List<UsuarioDTO>> listarUsuarios() {
+		return ResponseEntity.ok(usuarioService.listarUsuarios());
 	}
 
 	@PostMapping
-	public Usuario guardarUsuario(@RequestBody Usuario usuario) {
-		return usuarioRepository.save(usuario);
+	public ResponseEntity<UsuarioDTO> guardarUsuario(@RequestBody UsuarioRegistroDTO dto) {
+		return ResponseEntity.ok(usuarioService.guardarUsuario(dto));
 	}
-	// Obtener SOLO los docentes (US-08)
-    @GetMapping("/docentes")
-    public List<Usuario> listarDocentes() {
-        return usuarioRepository.findByRol("DOCENTE");
-    }
 
-    // Registrar un nuevo docente (US-05)
-    @PostMapping("/docentes")
-    public Usuario guardarDocente(@RequestBody Usuario docente) {
-        docente.setRol("DOCENTE"); // Aseguramos que nadie le cambie el rol
-        return usuarioRepository.save(docente);
-    }
-    
-    // Eliminar docente
-    @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
-        usuarioRepository.deleteById(id);
-    }
+	@GetMapping("/docentes")
+	public ResponseEntity<List<UsuarioDTO>> listarDocentes() {
+		return ResponseEntity.ok(usuarioService.listarDocentes());
+	}
+
+	@PostMapping("/docentes")
+	public ResponseEntity<UsuarioDTO> guardarDocente(@RequestBody UsuarioRegistroDTO dto) {
+		return ResponseEntity.ok(usuarioService.guardarDocente(dto));
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+		usuarioService.eliminarUsuario(id);
+		return ResponseEntity.noContent().build();
+	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody Usuario datosLogin) {
-		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(datosLogin.getEmail());
-
-		if (usuarioExistente.isPresent()) {
-			Usuario user = usuarioExistente.get();
-			if (user.getPassword().equals(datosLogin.getPassword())) {
-				return ResponseEntity.ok(user);
-			} else {
-				return ResponseEntity.status(401).body("Contraseña incorrecta");
+	public ResponseEntity<?> login(@RequestBody LoginDTO datosLogin) {
+		try {
+			UsuarioDTO usuarioLogueado = usuarioService.login(datosLogin);
+			return ResponseEntity.ok(usuarioLogueado);
+		} catch (RuntimeException e) {
+			if (e.getMessage().equals("Contraseña incorrecta")) {
+				return ResponseEntity.status(401).body(e.getMessage());
 			}
+			return ResponseEntity.status(404).body(e.getMessage());
 		}
-		return ResponseEntity.status(404).body("Usuario no encontrado");
 	}
 }

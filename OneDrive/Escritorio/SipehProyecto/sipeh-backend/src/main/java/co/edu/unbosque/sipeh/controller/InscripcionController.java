@@ -1,47 +1,39 @@
 package co.edu.unbosque.sipeh.controller;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import co.edu.unbosque.sipeh.model.Inscripcion;
-import co.edu.unbosque.sipeh.repository.InscripcionRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import co.edu.unbosque.sipeh.dto.InscripcionDTO;
+import co.edu.unbosque.sipeh.service.InscripcionService;
 
 @RestController
 @RequestMapping("/api/inscripciones")
 public class InscripcionController {
 
-	@Autowired
-	private InscripcionRepository inscripcionRepository;
+	private final InscripcionService inscripcionService;
 
-	// Para el Estudiante: ver sus materias inscritas
+	public InscripcionController(InscripcionService inscripcionService) {
+		this.inscripcionService = inscripcionService;
+	}
+
 	@GetMapping("/estudiante/{id}")
-	public List<Inscripcion> obtenerPorEstudiante(@PathVariable Long id) {
-		return inscripcionRepository.findByEstudianteId(id);
+	public ResponseEntity<List<InscripcionDTO>> obtenerPorEstudiante(@PathVariable Long id) {
+		return ResponseEntity.ok(inscripcionService.obtenerPorEstudiante(id));
 	}
 
-	// Para el Docente: ver qué alumnos están en su clase
 	@GetMapping("/materia/{id}")
-	public List<Inscripcion> obtenerPorMateria(@PathVariable Long id) {
-		return inscripcionRepository.findByMateriaId(id);
+	public ResponseEntity<List<InscripcionDTO>> obtenerPorMateria(@PathVariable Long id) {
+		return ResponseEntity.ok(inscripcionService.obtenerPorMateria(id));
 	}
 
-	// Guardar una nueva inscripción
 	@PostMapping
-	public Inscripcion inscribir(@RequestBody Inscripcion inscripcion) {
-		return inscripcionRepository.save(inscripcion);
+	public ResponseEntity<InscripcionDTO> inscribir(@RequestBody InscripcionDTO dto) {
+		return ResponseEntity.ok(inscripcionService.inscribir(dto));
 	}
 
-	// Cancelar una inscripción
 	@DeleteMapping("/{id}")
-	public void cancelarInscripcion(@PathVariable Long id) {
-		inscripcionRepository.deleteById(id);
+	public ResponseEntity<Void> cancelarInscripcion(@PathVariable Long id) {
+		inscripcionService.cancelarInscripcion(id);
+		return ResponseEntity.noContent().build();
 	}
 }

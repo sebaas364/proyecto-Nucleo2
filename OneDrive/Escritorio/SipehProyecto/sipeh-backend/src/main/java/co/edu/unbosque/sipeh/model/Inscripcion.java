@@ -1,6 +1,7 @@
 package co.edu.unbosque.sipeh.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,13 +17,11 @@ public class Inscripcion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	// Relación con el Estudiante (Usuario)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "estudiante_id", nullable = false)
 	private Usuario estudiante;
 
-	// Relación con el Curso (Materia)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "materia_id", nullable = false)
 	private Materia materia;
 
